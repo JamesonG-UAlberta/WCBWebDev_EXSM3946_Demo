@@ -24,17 +24,37 @@ namespace DotNetReact_BackEnd.Controllers
 
 
         [HttpPost]
-        public void Post()
+        public ActionResult Create(string newInt)
         {
+            // 1. Check to see if the argument exists at all (not null).
+            if (string.IsNullOrWhiteSpace(newInt)) return BadRequest("No data provided.");
+            // 2. Check to see if the data is in the correct format (is an int).
+            int convertedInt;
+            if (!int.TryParse(newInt, out convertedInt)) return BadRequest("Please ensure the data is an integer.");
+            /* Try / Catch Method:
+            try
+            {
+                convertedInt = int.Parse(newInt.Trim());
+            }
+            catch
+            {
+                return BadRequest("Please ensure the data is an integer.");
+            }
+            */
+            // 3. Check to see if the list already contains the data.
+            if (Data.Contains(convertedInt)) return BadRequest("Data already present.");
+            // 4. If applicable, check against business rules (multi-field after all single-field validation is performed)
+            Data.Add(convertedInt);
+            return Ok();
         }
 
         [HttpPut]
-        public void Put()
+        public ActionResult Update(string oldInt, string newInt)
         {
         }
 
         [HttpDelete]
-        public void Delete()
+        public ActionResult Delete(string oldInt)
         {
         }
 
