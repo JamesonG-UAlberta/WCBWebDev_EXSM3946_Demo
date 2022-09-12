@@ -30,7 +30,7 @@ namespace DotNetReact_BackEnd.Controllers
             if (string.IsNullOrWhiteSpace(newInt)) return BadRequest("No data provided.");
             // 2. Check to see if the data is in the correct format (is an int).
             int convertedInt;
-            if (!int.TryParse(newInt, out convertedInt)) return BadRequest("Please ensure the data is an integer.");
+            if (!int.TryParse(newInt.Trim(), out convertedInt)) return BadRequest("Please ensure the data is an integer.");
             /* Try / Catch Method:
             try
             {
@@ -51,11 +51,26 @@ namespace DotNetReact_BackEnd.Controllers
         [HttpPut]
         public ActionResult Update(string oldInt, string newInt)
         {
+            if (string.IsNullOrWhiteSpace(oldInt)) return BadRequest("No target data provided.");
+            if (string.IsNullOrWhiteSpace(newInt)) return BadRequest("No update data provided.");
+            int convertedOldInt, convertedNewInt;
+            if (!int.TryParse(oldInt.Trim(), out convertedOldInt)) return BadRequest("Please ensure the target data is an integer.");
+            if (!int.TryParse(newInt.Trim(), out convertedNewInt)) return BadRequest("Please ensure the update data is an integer.");
+            if (!Data.Contains(convertedOldInt)) return NotFound("Target could not be found.");
+            if (Data.Contains(convertedNewInt)) return BadRequest("Update data already present.");
+            Data[Data.FindIndex(x => x == convertedOldInt)] = convertedNewInt;
+            return Ok();
         }
 
         [HttpDelete]
         public ActionResult Delete(string oldInt)
         {
+            if (string.IsNullOrWhiteSpace(oldInt)) return BadRequest("No target data provided.");
+            int convertedOldInt;
+            if (!int.TryParse(oldInt.Trim(), out convertedOldInt)) return BadRequest("Please ensure the target data is an integer.");
+            if (!Data.Contains(convertedOldInt)) return NotFound("Target could not be found.");
+            Data.Remove(convertedOldInt);
+            return Ok();
         }
 
         [HttpGet]
@@ -69,7 +84,7 @@ namespace DotNetReact_BackEnd.Controllers
         [Route("sum")] // localhost:7048/InClass/sum (GET)
         public int Sum()
         {
-            return 0;
+            return Data.Sum();
         }
     }
 }
