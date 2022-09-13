@@ -26,11 +26,13 @@ export default class App extends Component {
             </div>
         );
     }
+
     async populateStrings() {
         const response = await fetch('examplereact');
         console.log(response);
         const data = await response.json();
-        this.setState({ strings: data, loading: false });
+        console.log(data);
+        this.setState({ forecasts: data, loading: false });
     }
 
     
