@@ -6,7 +6,7 @@ export default class App extends Component {
     // 1. Constructor sets a list of default strings.
     constructor(props) {
         super(props);
-        this.state = { strings: ["Hello", "World", "How do you do?"], count:0, loadingList: false, loadingCount: false };
+        this.state = { strings: ["Hello", "World", "How do you do?"], count:0, loadingList: false, loadingCount: false, newString: "" };
     }
 
     // 2. Render the list of default strings to the page with a refresh button. Rest.
@@ -19,8 +19,13 @@ export default class App extends Component {
             ? <p><em>Loading...</em></p>
             : <ul>
                 {this.state.strings.map(item =>
-                    <li key={item}>{item}</li>
-                )}
+                    <li key={item}>{item} 
+                        <button onClick={(() => { this.removeString(item) }).bind(this)}>Delete</button>
+                        <button onClick={(() => { this.updateString(item) }).bind(this)}>Update</button>
+                    </li>
+                )
+                    // When we click either the delete or update button, it passes "item" (the string in question) into the method. This allows the method to target a specific list item based on which button was clicked.
+                }
               </ul>;
 
         return (
@@ -42,9 +47,62 @@ export default class App extends Component {
                 }).bind(this)
 
                 }>Refresh</button>
+
+                <input value={this.state.newString} onChange={(event) => { this.setState({ newString: event.target.value }); }} type="text" />
+                <button onClick={(() => { this.setState({ loading: true }); this.addString(); }).bind(this)}>Add String</button>
             </div>
         );
         // Thread A ends.
+    }
+
+    async addString() {
+        // Request params gets converted to the query string (the bit after the question mark).
+        let requestParams = {
+            newString: this.state.newString
+        }
+        // Request options is used to specify what method the request will use.
+        let requestOptions = {
+            method: "POST"
+        }
+        const response = await fetch("examplereact?" + new URLSearchParams(requestParams), requestOptions);
+
+        console.log(response);
+
+        // If we want to refresh the list automatically, all we have to do is call our update methods at the end.
+       // this.populateCount();
+       // this.populateStrings();
+    }
+
+    // Remove and update accept a parameter, which is fed by the name of which list item was clicked.
+    async removeString(stringToRemove) {
+        let requestParams = {
+            oldString: stringToRemove
+        }
+        let requestOptions = {
+            method: "DELETE"
+        }
+        const response = await fetch("examplereact?" + new URLSearchParams(requestParams), requestOptions);
+
+        console.log(response);
+
+        this.populateCount();
+        this.populateStrings();
+    }
+
+    async updateString(stringToUpdate) {
+        let requestParams = {
+            oldString: stringToUpdate,
+            newString: this.state.newString
+        }
+        let requestOptions = {
+            method: "PATCH"
+        }
+        const response = await fetch("examplereact?" + new URLSearchParams(requestParams), requestOptions);
+
+        console.log(response);
+
+        this.populateCount();
+        this.populateStrings();
     }
 
     async populateCount() {
