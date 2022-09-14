@@ -1,3 +1,5 @@
+using DotNetReact_BackEnd.Data;
+
 namespace DotNetReact_BackEnd
 {
     public class Program
@@ -12,6 +14,7 @@ namespace DotNetReact_BackEnd
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddDbContext<DatabaseContext>();
 
             var app = builder.Build();
 

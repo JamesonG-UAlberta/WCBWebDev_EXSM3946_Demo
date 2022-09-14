@@ -69,8 +69,8 @@ export default class App extends Component {
         console.log(response);
 
         // If we want to refresh the list automatically, all we have to do is call our update methods at the end.
-       // this.populateCount();
-       // this.populateStrings();
+       this.populateCount();
+       this.populateStrings();
     }
 
     // Remove and update accept a parameter, which is fed by the name of which list item was clicked.
